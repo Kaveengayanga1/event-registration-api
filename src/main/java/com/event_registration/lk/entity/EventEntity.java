@@ -4,28 +4,37 @@ import com.event_registration.lk.dto.PriceRange;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Entity
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class EventEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String eventId;
-    private String name;
-    private String description;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    private Long id;
 
     @ElementCollection
     @CollectionTable(
             name = "event_price_ranges",
-            joinColumns = @JoinColumn(name = "event_id")
+            joinColumns = @JoinColumn(name = "event_id") //add relations to db
     )
     private ArrayList<PriceRange> priceRanges;
+    @Id
+    private String eventId;
+    private String name;
+    private String description;
+    private ArrayList<LocalDateTime> dates;
+    private String location;
+    @Lob //convert into BLOB object....byte[] maps to BLOB in databases
+    @Column(name = "image_data")
+    private byte[] image;
 
 }

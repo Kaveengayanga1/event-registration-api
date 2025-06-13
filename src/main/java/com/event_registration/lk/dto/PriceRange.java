@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PriceRange {
     private String label;
     private Double price;
