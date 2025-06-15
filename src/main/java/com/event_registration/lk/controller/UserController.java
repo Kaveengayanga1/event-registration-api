@@ -1,6 +1,7 @@
 package com.event_registration.lk.controller;
 
 import com.event_registration.lk.dto.User;
+import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +20,8 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public Map<String,String> addUser(@RequestBody User user){
-        Boolean result = userService.addUser(user);
-        if (result)
-            return Collections.singletonMap("signup status","successful");
-        else
-            return Collections.singletonMap("signup status","unsuccessful");
+    public UserResponse addUser(@RequestBody User user){
+        return userService.addUser(user);
     }
 
     @GetMapping("/hello")

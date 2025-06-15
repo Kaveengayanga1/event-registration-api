@@ -1,5 +1,6 @@
 package com.event_registration.lk.entity;
 
+import com.event_registration.lk.dto.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +22,9 @@ public class UserEntity {
 
     @Column(unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
 
 }
