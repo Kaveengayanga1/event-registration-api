@@ -1,6 +1,9 @@
 package com.event_registration.lk.service.impl;
 
 import com.event_registration.lk.dto.Event;
+import com.event_registration.lk.dto.response.EventResponse;
+import com.event_registration.lk.entity.EventEntity;
+import com.event_registration.lk.repository.EventRepository;
 import com.event_registration.lk.service.EventService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -11,24 +14,66 @@ import java.util.ArrayList;
 @Primary //main service for event handling
 public class EventServiceImpl implements EventService {
 
+    EventRepository eventRepository;
 
-    @Override
-    public Boolean addEvent(Event event) {
-        return null;
+    public EventServiceImpl(EventRepository eventRepository) {
+        this.eventRepository = eventRepository;
     }
 
     @Override
-    public Boolean removeEvent(Event event) {
-        return null;
+    public EventResponse addEvent(Event event) {
+        try{
+            eventRepository.save(
+                    EventEntity.builder()
+                    .eventId(event.getEventId())
+                    .name(event.getName())
+                    .description(event.getDescription())
+                    .dates(event.getDates())
+                    .location(event.getLocation())
+                    .image(event.getImage())
+                    .priceRanges(event.getPriceRanges())
+                    .build()
+            );
+            return new EventResponse("event-add","success");
+        }catch (Exception e){
+            return new EventResponse("event-add","event already exists");
+        }
     }
 
     @Override
-    public Boolean updateEvent(Event event) {
-        return null;
+    public EventResponse removeEvent(String id) {
+        Boolean result = eventRepository.existsEventEntityByEventIdContainingIgnoreCase(id);
+        if (result == true){
+            eventRepository.delete(eventRepository.findEventEntityByEventIdContainingIgnoreCase(id));
+            return new EventResponse("event-remove","success");
+        }
+        return new EventResponse("event-remove","event not exists");
+
     }
 
     @Override
-    public Event getEvent(String keyword) {
+    public EventResponse updateEvent(Event event) {
+        Boolean result = eventRepository.existsEventEntityByEventIdContainingIgnoreCase(event.getEventId());
+        if (result == true){
+            eventRepository.delete(eventRepository.findEventEntityByEventIdContainingIgnoreCase(event.getEventId()));
+            eventRepository.save(
+                    EventEntity.builder()
+                            .eventId(event.getEventId())
+                            .name(event.getName())
+                            .description(event.getDescription())
+                            .dates(event.getDates())
+                            .location(event.getLocation())
+                            .image(event.getImage())
+                            .priceRanges(event.getPriceRanges())
+                            .build()
+            );
+            return new EventResponse("event-update","success");
+        }
+        return new EventResponse("event-update","event not exists");
+    }
+
+    @Override
+    public EventResponse getEvent(String id) {
         return null;
     }
 

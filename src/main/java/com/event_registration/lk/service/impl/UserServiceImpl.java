@@ -5,15 +5,12 @@ import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.entity.UserEntity;
 import com.event_registration.lk.repository.UserRepository;
 import com.event_registration.lk.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -21,10 +18,19 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
+    ObjectMapper objectMapper;
+//    SignupEventProducer signupEventProducer;
 
-    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, SignupEventProducer signupEventProducer) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
+//        this.signupEventProducer = signupEventProducer;
+//    }
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -37,10 +43,14 @@ public class UserServiceImpl implements UserService {
                 .role(user.getRole())
                 .build();
         if (userRepository.existsUserEntityByEmailContainingIgnoreCase(user.getEmail())){
-            return new UserResponse("409","email already in use");
+            return new UserResponse("signup","email already in use");
         }
         try {
             userRepository.save(userEntity);
+
+            //send email using producer
+            //signupEventProducer.publishUserSignupEvent(userEntity.getEmail());
+
             return new UserResponse("signup","success");
         } catch (Exception e) {
             return new UserResponse("signup","unsuccess");
@@ -59,6 +69,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ArrayList<User> getAllUsers() {
-        return null;
+        return new ArrayList<User>();
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        Optional<UserEntity> userEntityByEmailContainingIgnoreCase = userRepository.findUserEntityByEmailContainingIgnoreCase(email);
+        return objectMapper.convertValue(userEntityByEmailContainingIgnoreCase.get(), User.class);
+    }
+
+
 }

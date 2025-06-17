@@ -5,9 +5,6 @@ import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -19,7 +16,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/signup")
     public UserResponse addUser(@RequestBody User user){
         return userService.addUser(user);
     }

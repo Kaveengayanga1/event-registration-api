@@ -1,17 +1,16 @@
 package com.event_registration.lk.service;
 
 import com.event_registration.lk.dto.Event;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Service;
+import com.event_registration.lk.dto.response.EventResponse;
 
 import java.util.ArrayList;
 
 public interface EventService {
 
-    public Boolean addEvent(Event event);
-    public Boolean removeEvent(Event event);
-    public Boolean updateEvent(Event event);
-    public Event getEvent(String keyword);
+    public EventResponse addEvent(Event event);
+    public EventResponse removeEvent(String id);
+    public EventResponse updateEvent(Event event);
+    public EventResponse getEvent(String id);
     public ArrayList<Event> getAllEvents();
 
 }
