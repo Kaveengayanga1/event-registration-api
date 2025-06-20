@@ -1,8 +1,17 @@
 package com.event_registration.lk.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@Data
+@AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class Event {
 
     private String eventId;

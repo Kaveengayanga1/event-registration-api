@@ -5,8 +5,7 @@ import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Map;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/user")
@@ -19,13 +18,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/add")
+    @PostMapping("/signup")
     public UserResponse addUser(@RequestBody User user){
         return userService.addUser(user);
     }
 
     @GetMapping("/hello")
     public String sayHello(){
-        return "Hello";
+        Date date = new Date(new java.util.Date().getTime());
+        return "Hello "+date;
     }
 }
