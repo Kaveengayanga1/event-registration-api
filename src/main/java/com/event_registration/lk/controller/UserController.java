@@ -5,6 +5,8 @@ import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -23,6 +25,7 @@ public class UserController {
 
     @GetMapping("/hello")
     public String sayHello(){
-        return "Hello";
+        Date date = new Date(new java.util.Date().getTime());
+        return "Hello "+date;
     }
 }

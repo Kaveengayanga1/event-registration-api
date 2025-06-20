@@ -7,6 +7,8 @@ import com.event_registration.lk.repository.UserRepository;
 import com.event_registration.lk.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     ObjectMapper objectMapper;
+    AuthenticationManager authenticationManager;
+
+
 //    SignupEventProducer signupEventProducer;
 
 //    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, SignupEventProducer signupEventProducer) {
@@ -27,10 +32,11 @@ public class UserServiceImpl implements UserService {
 //        this.signupEventProducer = signupEventProducer;
 //    }
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -42,7 +48,7 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .role(user.getRole())
                 .build();
-        if (userRepository.existsUserEntityByEmailContainingIgnoreCase(user.getEmail())){
+        if (userRepository.existsUserEntityByEmailContainingIgnoreCase(user.getEmail()).describeConstable().isPresent()){
             return new UserResponse("signup","email already in use");
         }
         try {
@@ -54,6 +60,23 @@ public class UserServiceImpl implements UserService {
             return new UserResponse("signup","success");
         } catch (Exception e) {
             return new UserResponse("signup","unsuccess");
+        }
+    }
+
+    @Override
+    public UserResponse loginUser(User user) {
+        log.info("login user service layer");
+        Authentication authentication = authenticationManager.authenticate(
+
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        user.getPassword()
+                )
+        );
+        if (authentication.isAuthenticated()){
+            return new UserResponse("login","success");
+        }else {
+            return new UserResponse("login", "unsuccess");
         }
     }
 
@@ -77,6 +100,4 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> userEntityByEmailContainingIgnoreCase = userRepository.findUserEntityByEmailContainingIgnoreCase(email);
         return objectMapper.convertValue(userEntityByEmailContainingIgnoreCase.get(), User.class);
     }
-
-
 }

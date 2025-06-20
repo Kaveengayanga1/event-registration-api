@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public interface UserService {
     public UserResponse addUser(User user);
+    public UserResponse loginUser(User user);
     public Boolean removeUser(String keyword);
     public Boolean updateUser(String keyword);
     public ArrayList<User> getAllUsers();
