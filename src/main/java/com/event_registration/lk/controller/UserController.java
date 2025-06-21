@@ -18,11 +18,11 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/signup")
-    public UserResponse addUser(@RequestBody User user){
-        return userService.addUser(user);
-    }
-
+//    @PostMapping("/signup")
+//    public UserResponse addUser(@RequestBody User user){
+//        return userService.addUser(user);
+//    }
+//
     @GetMapping("/hello")
     public String sayHello(){
         Date date = new Date(new java.util.Date().getTime());

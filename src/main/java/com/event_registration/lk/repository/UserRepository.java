@@ -8,5 +8,8 @@ import java.util.Optional;
 public interface UserRepository extends CrudRepository<UserEntity,String> {
     public Boolean existsUserEntityByEmailContainingIgnoreCase(String email);
     Optional<UserEntity> findUserEntityByEmailContainingIgnoreCase(String email);
+    Optional<UserEntity> findByUsernameIgnoreCase(String username);
+    Optional<UserEntity> findByEmailIgnoreCase(String email);
+    boolean existsByEmailContainingIgnoreCase(String email);
 
 }

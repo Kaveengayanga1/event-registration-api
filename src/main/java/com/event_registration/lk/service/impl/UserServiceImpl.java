@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
                 .password(passwordEncoder.encode(user.getPassword()))
                 .role(user.getRole())
                 .build();
-        if (userRepository.existsUserEntityByEmailContainingIgnoreCase(user.getEmail()).describeConstable().isPresent()){
-            return new UserResponse("signup","email already in use");
+        if (userRepository.existsByEmailContainingIgnoreCase(user.getEmail())) {
+            return new UserResponse("signup", "email already in use");
         }
         try {
             userRepository.save(userEntity);

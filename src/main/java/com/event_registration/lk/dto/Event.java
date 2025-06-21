@@ -13,7 +13,6 @@ import java.util.ArrayList;
 @Builder
 @NoArgsConstructor
 public class Event {
-
     private String eventId;
     private String name;
     private String description;

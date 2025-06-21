@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,10 +18,6 @@ import java.util.ArrayList;
 @AllArgsConstructor
 public class EventEntity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private Long id;
-
     @ElementCollection
     @CollectionTable(
             name = "event_price_ranges",
@@ -28,6 +25,11 @@ public class EventEntity {
     )
     private ArrayList<PriceRange> priceRanges;
     @Id
+    @GeneratedValue(generator = "UUID")//temporarily generate id
+    @GenericGenerator(
+            name="UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private String eventId;
     private String name;
     private String description;
