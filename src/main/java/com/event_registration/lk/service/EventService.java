@@ -10,7 +10,6 @@ public interface EventService {
     public EventResponse addEvent(Event event);
     public EventResponse removeEvent(String id);
     public EventResponse updateEvent(Event event);
-    public EventResponse getEvent(String id);
     public ArrayList<Event> getAllEvents();
 
 }

@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsPasswordService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,29 +28,44 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //deprecated version
-        /*
-        http
-                .csrf().disable() // 🚫 Disable CSRF for APIs
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/**").permitAll() // or `.authenticated()` if needed
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(); // or use `.formLogin()` if needed
-
-        return http.build();
-        */
-
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("auth/login","auth/signup","user/hello").permitAll()
+                        .requestMatchers(
+                                "/auth/**",
+                                "/user/hello",
+                                "/event/**"
+                                )
+                        .permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        //generated
+////        return http
+////                .csrf(csrf -> csrf.disable())
+////                .authorizeHttpRequests(auth -> auth
+////                        .requestMatchers("/auth/signup", "/auth/login", "/user/**").permitAll()
+////                        .anyRequest().authenticated())
+////                .sessionManagement(session -> session
+////                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+////                .httpBasic(Customizer.withDefaults())
+////                .build();
+//
+//        //generated for disable entire auth
+//        return http
+//                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll() // 🔓 Allow all requests
+//                )
+//                .build(); // No HTTP basic, no session
+//    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

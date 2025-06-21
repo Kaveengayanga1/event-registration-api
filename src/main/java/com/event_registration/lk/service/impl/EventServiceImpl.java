@@ -5,33 +5,36 @@ import com.event_registration.lk.dto.response.EventResponse;
 import com.event_registration.lk.entity.EventEntity;
 import com.event_registration.lk.repository.EventRepository;
 import com.event_registration.lk.service.EventService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 @Service
 @Primary //main service for event handling
 public class EventServiceImpl implements EventService {
 
     EventRepository eventRepository;
+    ObjectMapper objectMapper;
 
-    public EventServiceImpl(EventRepository eventRepository) {
+    public EventServiceImpl(EventRepository eventRepository, ObjectMapper objectMapper) {
         this.eventRepository = eventRepository;
+        this.objectMapper = objectMapper;
     }
 
+    //Done
     @Override
     public EventResponse addEvent(Event event) {
         try{
             eventRepository.save(
                     EventEntity.builder()
-                    .eventId(event.getEventId())
                     .name(event.getName())
                     .description(event.getDescription())
                     .dates(event.getDates())
                     .location(event.getLocation())
                     .image(event.getImage())
-                    .priceRanges(event.getPriceRanges())
                     .build()
             );
             return new EventResponse("event-add","success");
@@ -40,6 +43,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    //Done
     @Override
     public EventResponse removeEvent(String id) {
         Boolean result = eventRepository.existsEventEntityByEventIdContainingIgnoreCase(id);
@@ -51,6 +55,7 @@ public class EventServiceImpl implements EventService {
 
     }
 
+    //Done
     @Override
     public EventResponse updateEvent(Event event) {
         Boolean result = eventRepository.existsEventEntityByEventIdContainingIgnoreCase(event.getEventId());
@@ -72,13 +77,17 @@ public class EventServiceImpl implements EventService {
         return new EventResponse("event-update","event not exists");
     }
 
-    @Override
-    public EventResponse getEvent(String id) {
-        return null;
-    }
-
+    //Done
     @Override
     public ArrayList<Event> getAllEvents() {
-        return null;
+        ArrayList<Event> eventList = new ArrayList<>();
+
+        Iterable<EventEntity> eventEntityIterable = eventRepository.findAll();
+        Iterator<EventEntity> eventEntityIterator = eventEntityIterable.iterator();
+        while (eventEntityIterator.hasNext()){
+            Event event = objectMapper.convertValue(eventEntityIterator.next(), Event.class);
+            eventList.add(event);
+        }
+        return eventList;
     }
 }
