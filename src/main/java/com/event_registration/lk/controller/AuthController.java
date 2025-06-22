@@ -1,6 +1,7 @@
 package com.event_registration.lk.controller;
 
 import com.event_registration.lk.dto.User;
+import com.event_registration.lk.dto.request.LoginRequest;
 import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
+@CrossOrigin
 public class AuthController {
 
     private final UserService userService;
@@ -23,9 +25,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public UserResponse loginUser(@RequestBody User user){
+    public UserResponse loginUser(@RequestBody LoginRequest loginRequest){
+        log.info("username : "+loginRequest.getEmail()+" | password : "+loginRequest.getPassword());
         log.info("login user control layer");
-        return userService.loginUser(user);
+        return userService.loginUser(loginRequest);
     }
     @GetMapping
     public String hello(){

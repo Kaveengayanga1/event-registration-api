@@ -1,18 +1,15 @@
 package com.event_registration.lk.service.impl;
 
-import com.event_registration.lk.dto.User;
+import com.event_registration.lk.dto.request.LoginRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
@@ -69,13 +66,13 @@ public class JwtServiceImpl {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateJwtToken(User user) {
-        String subject = user.getUsername() != null ? user.getUsername() : user.getEmail();
+    public String generateJwtToken(LoginRequest loginRequest) {
+        String subject = loginRequest.getEmail() != null ? loginRequest.getEmail() : loginRequest.getEmail();
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(user.getEmail())
+                .subject(loginRequest.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour
                 .and()

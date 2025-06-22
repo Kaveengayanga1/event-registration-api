@@ -1,6 +1,7 @@
 package com.event_registration.lk.service.impl;
 
 import com.event_registration.lk.dto.User;
+import com.event_registration.lk.dto.request.LoginRequest;
 import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.entity.UserEntity;
 import com.event_registration.lk.repository.UserRepository;
@@ -57,24 +58,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse loginUser(User user) {
-        String subject = user.getUsername() != null ? user.getUsername() : user.getEmail();
-        String jwtToken = jwtService.generateJwtToken(user);
+    public UserResponse loginUser(LoginRequest loginRequest) {
+        Optional<UserEntity> entity = userRepository.findByEmailIgnoreCase(loginRequest.getEmail());
+        String jwtToken = jwtService.generateJwtToken(loginRequest);
         log.info("login user service layer");
         Authentication authentication = authenticationManager.authenticate(
 
-//                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-//                        user.getUsername(),
-//                        user.getPassword()
-//                )
-
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        user.getEmail() /*!= null ? user.getEmail() : user.getUsername()*/,
-                        user.getPassword()
+                        loginRequest.getEmail() /*!= null ? user.getEmail() : user.getUsername()*/,
+                        loginRequest.getPassword()
                 )
         );
         if (authentication.isAuthenticated()){
-            return new UserResponse("login","success",jwtToken);
+            return new UserResponse("login","success",entity.get().getRole(), jwtToken);
         }else {
             return new UserResponse("login", "unsuccess");
         }
