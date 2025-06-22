@@ -24,15 +24,6 @@ public class UserServiceImpl implements UserService {
     AuthenticationManager authenticationManager;
     JwtServiceImpl jwtService;
 
-
-//    SignupEventProducer signupEventProducer;
-
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, SignupEventProducer signupEventProducer) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//        this.signupEventProducer = signupEventProducer;
-//    }
-
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager, JwtServiceImpl jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
