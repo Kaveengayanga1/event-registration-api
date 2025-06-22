@@ -22,21 +22,14 @@ public class UserServiceImpl implements UserService {
     PasswordEncoder passwordEncoder;
     ObjectMapper objectMapper;
     AuthenticationManager authenticationManager;
+    JwtServiceImpl jwtService;
 
-
-//    SignupEventProducer signupEventProducer;
-
-//    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, SignupEventProducer signupEventProducer) {
-//        this.userRepository = userRepository;
-//        this.passwordEncoder = passwordEncoder;
-//        this.signupEventProducer = signupEventProducer;
-//    }
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager, JwtServiceImpl jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -65,16 +58,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse loginUser(User user) {
+        String subject = user.getUsername() != null ? user.getUsername() : user.getEmail();
+        String jwtToken = jwtService.generateJwtToken(user);
         log.info("login user service layer");
         Authentication authentication = authenticationManager.authenticate(
 
+//                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+//                        user.getUsername(),
+//                        user.getPassword()
+//                )
+
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
+                        user.getEmail() /*!= null ? user.getEmail() : user.getUsername()*/,
                         user.getPassword()
                 )
         );
         if (authentication.isAuthenticated()){
-            return new UserResponse("login","success");
+            return new UserResponse("login","success",jwtToken);
         }else {
             return new UserResponse("login", "unsuccess");
         }

@@ -15,11 +15,10 @@ public class CustomUserDetailService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity user = userRepository
-                .findByUsernameIgnoreCase(usernameOrEmail)
-                .or(() -> userRepository.findByEmailIgnoreCase(usernameOrEmail))
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + usernameOrEmail));
+                .findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())

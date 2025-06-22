@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -21,9 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
+    private JwtFilter jwtFilter;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService,JwtFilter jwtFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
     }
 
     @Bean
@@ -31,40 +34,31 @@ public class SecurityConfig {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(
-                                "/auth/**",
-                                "/user/hello",
-                                "/event/**"
-                                )
-                        .permitAll()
+                        .requestMatchers("/auth/**").permitAll() //access for everyone
+                        .requestMatchers("/event/**").hasRole("ADMIN")
+                        .requestMatchers("/booking/**").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        //generated
-////        return http
-////                .csrf(csrf -> csrf.disable())
-////                .authorizeHttpRequests(auth -> auth
-////                        .requestMatchers("/auth/signup", "/auth/login", "/user/**").permitAll()
-////                        .anyRequest().authenticated())
-////                .sessionManagement(session -> session
-////                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-////                .httpBasic(Customizer.withDefaults())
-////                .build();
-//
-//        //generated for disable entire auth
-//        return http
-//                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll() // 🔓 Allow all requests
-//                )
-//                .build(); // No HTTP basic, no session
-//    }
+    //Total auth security disable option
+    /*
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        //generated for disable entire auth
+        return http
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll() // 🔓 Allow all requests
+                )
+                .build(); // No HTTP basic, no session
+    }
+     */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -84,10 +78,5 @@ public class SecurityConfig {
 
         return provider;
     }
-
-
-
-
-
 }
 
