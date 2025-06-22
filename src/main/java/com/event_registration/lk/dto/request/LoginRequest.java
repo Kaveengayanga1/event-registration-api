@@ -1,4 +1,4 @@
-package com.event_registration.lk.dto;
+package com.event_registration.lk.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

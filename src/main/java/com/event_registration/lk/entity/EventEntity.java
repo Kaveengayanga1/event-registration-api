@@ -25,11 +25,6 @@ public class EventEntity {
     )
     private ArrayList<PriceRange> priceRanges;
     @Id
-    @GeneratedValue(generator = "UUID")//temporarily generate id
-    @GenericGenerator(
-            name="UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     private String eventId;
     private String name;
     private String description;

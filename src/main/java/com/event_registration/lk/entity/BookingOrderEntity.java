@@ -16,19 +16,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class OrderEntity {
+public class BookingOrderEntity {
 
     @Id
-    @GeneratedValue(generator = "UUID")//temporarily generate id
-    @GenericGenerator(
-            name="UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    private String orderId;
-    private String userId;
+    private String bookingId;
+    private Long userId;
     private String eventId;
-    private Integer ticketNumber;
-    private LocalDateTime orderDate;
+    private String ticketNumber;
+    private LocalDateTime orderedDate;
     private String orderStatus; //confirm or canceled
 
 }
