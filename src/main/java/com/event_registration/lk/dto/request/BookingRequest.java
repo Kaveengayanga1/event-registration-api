@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class BookingRequest {
-    private Event event;
-    private String userId;
+    private String eventId;
+    private Long userId;
     private LocalDateTime localDateTime;
 }

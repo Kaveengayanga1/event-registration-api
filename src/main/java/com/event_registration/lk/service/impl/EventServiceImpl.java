@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.UUID;
 
 @Service
 @Primary //main service for event handling
@@ -30,19 +31,19 @@ public class EventServiceImpl implements EventService {
         try{
             eventRepository.save(
                     EventEntity.builder()
-                    .name(event.getName())
-                    .description(event.getDescription())
-                    .dates(event.getDates())
-                    .location(event.getLocation())
-                    .image(event.getImage())
-                    .build()
+                            .eventId(generateEventId())
+                            .name(event.getName())
+                            .description(event.getDescription())
+                            .dates(event.getDates())
+                            .location(event.getLocation())
+                            .image(event.getImage())
+                            .build()
             );
             return new EventResponse("event-add","success");
         }catch (Exception e){
             return new EventResponse("event-add","event already exists");
         }
     }
-
     //Done
     @Override
     public EventResponse removeEvent(String id) {
@@ -54,7 +55,6 @@ public class EventServiceImpl implements EventService {
         return new EventResponse("event-remove","event not exists");
 
     }
-
     //Done
     @Override
     public EventResponse updateEvent(Event event) {
@@ -90,4 +90,15 @@ public class EventServiceImpl implements EventService {
         }
         return eventList;
     }
+
+    private String generateEventId() {
+        String prefix = "E";
+        String uniquePart = UUID.randomUUID().toString()
+                .replace("-", "")
+                .substring(0, 9)
+                .toUpperCase();
+
+        return prefix + uniquePart;
+    }
+
 }

@@ -7,7 +7,6 @@ import com.event_registration.lk.dto.response.BookingResponse;
 public interface BookingService {
 
     public BookingResponse bookEvent(BookingRequest bookingRequest);
-    public BookingResponse cancelEvent(String eventId, String userId);
-    public BookingResponse confirmEvent(String eventId, String userId);
-    public BookingResponse getBooking(String eventId, String userId);
+    public BookingResponse cancelEvent(String bookingId);
+    public BookingResponse getUserBookingDetails(Long userId);
 }
