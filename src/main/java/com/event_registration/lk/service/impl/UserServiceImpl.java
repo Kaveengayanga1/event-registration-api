@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 //                )
 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        subject,
+                        user.getEmail() /*!= null ? user.getEmail() : user.getUsername()*/,
                         user.getPassword()
                 )
         );
