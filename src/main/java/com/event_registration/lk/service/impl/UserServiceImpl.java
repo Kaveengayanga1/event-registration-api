@@ -1,5 +1,6 @@
 package com.event_registration.lk.service.impl;
 
+
 import com.event_registration.lk.dto.User;
 import com.event_registration.lk.dto.request.LoginRequest;
 import com.event_registration.lk.dto.response.UserResponse;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Optional;
 
 @Service
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
         this.jwtService = jwtService;
     }
 
+    //Done
     @Override
     public UserResponse addUser(User user) {
 
@@ -56,10 +59,12 @@ public class UserServiceImpl implements UserService {
             return new UserResponse("signup","unsuccess");
         }
     }
-
+    //Done
     @Override
     public UserResponse loginUser(LoginRequest loginRequest) {
-        Optional<UserEntity> entity = userRepository.findByEmailIgnoreCase(loginRequest.getEmail());
+        UserEntity entity = userRepository.findUserEntityByEmailIgnoreCase(loginRequest.getEmail());
+        User user = objectMapper.convertValue(entity, User.class);
+        user.setPassword(null);
         String jwtToken = jwtService.generateJwtToken(loginRequest);
         log.info("login user service layer");
         Authentication authentication = authenticationManager.authenticate(
@@ -70,30 +75,65 @@ public class UserServiceImpl implements UserService {
                 )
         );
         if (authentication.isAuthenticated()){
-            return new UserResponse("login","success",entity.get().getRole(), jwtToken);
+            return new UserResponse("login","success",user,jwtToken);
         }else {
             return new UserResponse("login", "unsuccess");
         }
     }
-
+    //Done
     @Override
-    public Boolean removeUser(String keyword) {
-        return null;
+    public UserResponse removeUser(Long userId) {
+        if (!userRepository.existsByUserId(userId)){
+            return new UserResponse("account-remove","user not exists");
+        }
+        try{
+            if (userRepository.deleteByUserId(userId)){
+                return new UserResponse("account-remove","success");
+            }else {
+                return new UserResponse("account-remove","unsuccess");
+            }
+        }catch (Exception e){
+            return new UserResponse("account-remove","error occurred : "+e.getMessage());
+        }
     }
-
+    //Done
     @Override
-    public Boolean updateUser(String keyword) {
-        return null;
+    public UserResponse updateUser(User user) {
+        Optional<UserEntity> existingUserEntity = userRepository.findByEmailIgnoreCase(user.getEmail());
+        if (existingUserEntity.isEmpty()){
+            return new UserResponse("account-update","user not exists");
+        }
+        UserEntity userEntity = objectMapper.convertValue(existingUserEntity.get(), UserEntity.class);
+        userEntity.setEmail(user.getEmail());
+        userEntity.setUsername(user.getUsername());
+        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        try {
+            userRepository.save(userEntity);
+            return new UserResponse("account-update","success");
+        } catch (Exception e) {
+            return new UserResponse("account-update","unsuccess");
+        }
     }
-
+    //Done
     @Override
-    public ArrayList<User> getAllUsers() {
-        return new ArrayList<User>();
+    public UserResponse getAllUsers() {
+        ArrayList<User> userList = new ArrayList<>();
+
+        Iterable<UserEntity> userIterable = userRepository.findAll();
+        Iterator<UserEntity> userEntityIterator = userIterable.iterator();
+        while (userEntityIterator.hasNext()){
+            User user = objectMapper.convertValue(userEntityIterator.next(), User.class);
+            userList.add(user);
+        }
+        return new UserResponse("event-list","success",userList);
     }
-
+    //Done
     @Override
-    public User getUserByEmail(String email) {
-        Optional<UserEntity> userEntityByEmailContainingIgnoreCase = userRepository.findUserEntityByEmailContainingIgnoreCase(email);
-        return objectMapper.convertValue(userEntityByEmailContainingIgnoreCase.get(), User.class);
+    public UserResponse getUserByEmail(String email) {
+        UserEntity entity = userRepository.findUserEntityByEmailIgnoreCase(email);
+        User user = objectMapper.convertValue(entity, User.class);
+        user.setPassword(null);
+        return new UserResponse("get user by email","success",user);
     }
 }

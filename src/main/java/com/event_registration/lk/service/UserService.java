@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public interface UserService {
     public UserResponse addUser(User user);
     public UserResponse loginUser(LoginRequest loginRequest);
-    public Boolean removeUser(String keyword);
-    public Boolean updateUser(String keyword);
-    public ArrayList<User> getAllUsers();
-    public User getUserByEmail(String email);
+    public UserResponse removeUser(Long userId);
+    public UserResponse updateUser(User user);
+    public UserResponse getAllUsers();
+    public UserResponse getUserByEmail(String email);
 }
