@@ -19,4 +19,5 @@ public class BookingResponse {
         this.status = status;
         this.message = message;
     }
+
 }

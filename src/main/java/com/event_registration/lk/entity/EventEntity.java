@@ -35,5 +35,4 @@ public class EventEntity {
     @Lob //convert into BLOB object....byte[] maps to BLOB in databases
     @Column(name = "image_data")
     private byte[] image;
-
 }

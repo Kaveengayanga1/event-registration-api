@@ -7,6 +7,8 @@ import com.event_registration.lk.entity.BookingOrderEntity;
 import com.event_registration.lk.repository.BookingRepository;
 import com.event_registration.lk.repository.EventRepository;
 import com.event_registration.lk.service.BookingService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -23,28 +25,36 @@ public class BookingServiceImpl implements BookingService {
 
     BookingRepository bookingRepository;
     EventRepository eventRepository;
+    ObjectMapper objectMapper;
 
-    public BookingServiceImpl(BookingRepository bookingRepository, EventRepository eventRepository) {
+    public BookingServiceImpl(BookingRepository bookingRepository, EventRepository eventRepository, ObjectMapper objectMapper) {
         this.bookingRepository = bookingRepository;
         this.eventRepository = eventRepository;
+        this.objectMapper = objectMapper;
     }
     //Done
     @Override
     public BookingResponse bookEvent(BookingRequest bookingRequest) {
         try {
-            bookingRepository.save(
-                    BookingOrderEntity.builder()
-                            .bookingId(generateBookingId())
-                            .eventId(bookingRequest.getEventId())
-                            .userId(bookingRequest.getUserId())
-                            .orderedDate(bookingRequest.getLocalDateTime())
-                            .ticketNumber(generateTicketNumber())
-                            .orderStatus("confirmed")
-                            .build()
-            );
+            BookingOrder order = BookingOrder.builder()
+                    .eventId(bookingRequest.getEventId())
+                    .userId(bookingRequest.getUserId())
+                    .bookingId(generateBookingId())
+                    .ticketNumber(generateTicketNumber())
+                    .orderDate(bookingRequest.getLocalDateTime())
+                    .orderStatus("confirmed")
+                    .build();
+
+            BookingOrderEntity bookingOrderEntity = objectMapper.convertValue(order, BookingOrderEntity.class);
+
+            bookingRepository.save(bookingOrderEntity);
+
+            ArrayList<BookingOrder> bookingOrderList = new ArrayList<>();
+            bookingOrderList.add(order);
             return BookingResponse.builder()
                     .status("booking")
                     .message("success")
+                    .orderList(bookingOrderList)
                     .build();
         } catch (Exception e) {
             log.info("error in booking event : "+e.getMessage());
@@ -56,9 +66,10 @@ public class BookingServiceImpl implements BookingService {
     }
     //Done
     @Override
-    public BookingResponse cancelEvent(String bookingId) {
+    @Transactional
+    public BookingResponse cancelBooking(String bookingId) {
         try{
-            if(!bookingRepository.existsByBookingIdContainingIgnoreCase(bookingId)){
+            if(!bookingRepository.existsByBookingId(bookingId)){
                 return BookingResponse.builder()
                         .status("booking-cancel")
                         .message("no record exists for booking id : " + bookingId + "")
@@ -102,6 +113,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    //convert BookingOrder entity to dto
     private BookingOrder toBookingOrder(BookingOrderEntity entity){
         return BookingOrder.builder()
                 .bookingId(entity.getBookingId())
@@ -112,7 +124,7 @@ public class BookingServiceImpl implements BookingService {
                 .orderStatus(entity.getOrderStatus())
                 .build();
     }
-
+    //Automatically generate ticket number
     private String generateTicketNumber(){
         LocalDateTime dateTime = LocalDateTime.now();
 
@@ -126,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
         String countSeq = String.format("%05d", todayCount);
         return "TKT"+countSeq+time+date;
     }
-
+    //Automatically generate booking id
     private String generateBookingId() {
         String prefix = "B";
         String uniquePart = UUID.randomUUID().toString()

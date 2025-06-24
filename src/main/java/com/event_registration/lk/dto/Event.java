@@ -21,7 +21,7 @@ public class Event {
     private String name;
     private String description;
     //private ArrayList<PriceRange> priceRanges;
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PriceRange> priceRanges; // ✅ Use List instead of ArrayList
     private ArrayList<LocalDateTime> dates;
     private String location;

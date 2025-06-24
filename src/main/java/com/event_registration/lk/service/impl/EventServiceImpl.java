@@ -30,6 +30,7 @@ public class EventServiceImpl implements EventService {
     //Done
     @Override
     public EventResponse addEvent(Event event) {
+
         try{
             eventRepository.save(
                     EventEntity.builder()
@@ -37,6 +38,7 @@ public class EventServiceImpl implements EventService {
                             .name(event.getName())
                             .description(event.getDescription())
                             .dates(event.getDates())
+                            .priceRanges(event.getPriceRanges())
                             .location(event.getLocation())
                             .image(event.getImage())
                             .build()
@@ -78,7 +80,6 @@ public class EventServiceImpl implements EventService {
         }
         return new EventResponse("event-update","event not exists");
     }
-
     //Done
     @Override
     public EventResponse getAllEvents() {

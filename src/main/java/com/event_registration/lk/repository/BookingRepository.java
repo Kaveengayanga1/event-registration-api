@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface BookingRepository extends JpaRepository <BookingOrderEntity,String> {
     boolean existsByBookingIdContainingIgnoreCase(String bookingId);
+    boolean existsByBookingId(String bookingId);
     boolean deleteByBookingIdContainingIgnoreCase(String bookingId);
     long countByOrderedDateBetween(LocalDateTime start, LocalDateTime end);
     List<BookingOrderEntity> findAllByUserId(Long userId);

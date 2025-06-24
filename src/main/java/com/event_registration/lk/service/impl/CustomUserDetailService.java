@@ -5,6 +5,7 @@ import com.event_registration.lk.repository.UserRepository;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
+//For Authentication and Authorization using Spring Security
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 

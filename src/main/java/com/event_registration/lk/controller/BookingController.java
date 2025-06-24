@@ -20,12 +20,12 @@ public class BookingController {
     public BookingResponse bookEvent(@RequestBody BookingRequest bookingRequest){
         return bookingService.bookEvent(bookingRequest);
     }
-    @GetMapping
+    @GetMapping("/get-details")
     public BookingResponse getUserBookingDetails(@RequestParam Long userId){
         return bookingService.getUserBookingDetails(userId);
     }
-    @DeleteMapping
-    public BookingResponse cancelEvent(@RequestParam String bookingId){
-        return bookingService.cancelEvent(bookingId);
+    @DeleteMapping("/cancel")
+    public BookingResponse cancelBooking(@RequestParam String bookingId){
+        return bookingService.cancelBooking(bookingId);
     }
 }
