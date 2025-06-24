@@ -20,7 +20,12 @@ public class UserController {
 
     @DeleteMapping("/delete")
     public UserResponse deleteUser(@RequestParam String userId) {
-        return new UserResponse("Status","not implemented yet");
+        return userService.removeUser(Long.parseLong(userId));
+    }
+
+    @PutMapping("/update")
+    public UserResponse updateUser(@RequestBody User user) {
+        return userService.updateUser(user);
     }
 
     @GetMapping("/hello")
@@ -28,4 +33,14 @@ public class UserController {
         Date date = new Date(new java.util.Date().getTime());
         return "Hello "+date;
     }
+
+    @GetMapping("/get-all-users")
+    public UserResponse getAllUsers(){
+        return userService.getAllUsers();
+    }
+    @GetMapping("/get-user-by-email")
+    public UserResponse getUserByEmail(@RequestParam String email){
+        return userService.getUserByEmail(email);
+    }
+
 }

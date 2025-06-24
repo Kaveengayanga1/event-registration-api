@@ -3,14 +3,11 @@ package com.event_registration.lk.controller;
 import com.event_registration.lk.dto.Event;
 import com.event_registration.lk.dto.response.EventResponse;
 import com.event_registration.lk.service.EventService;
-import com.sun.jdi.request.EventRequest;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/event")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class EventController {
 
     EventService eventService;
@@ -26,16 +23,15 @@ public class EventController {
     }
     @DeleteMapping("/delete")
     public EventResponse deleteEvent(@RequestParam String eventId) {
-        return new EventResponse("Status","not implemented yet");
+        return eventService.removeEvent(eventId);
     }
-    @GetMapping("/get-all")
+    @GetMapping("/get-all-events")
     public EventResponse getAllEvents() {
-        //return new EventResponse("status","event list",eventService.getAllEvents());
-        return new EventResponse("status","not implemented yet");
+        return eventService.getAllEvents();
     }
     @PutMapping("/update")
     public EventResponse updateEvent(@RequestBody Event event) {
-        return new EventResponse("Status","not implemented yet");
+        return eventService.updateEvent(event);
     }
 
 }

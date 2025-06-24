@@ -6,6 +6,7 @@ import com.event_registration.lk.entity.EventEntity;
 import com.event_registration.lk.repository.EventRepository;
 import com.event_registration.lk.service.EventService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @Primary //main service for event handling
 public class EventServiceImpl implements EventService {
@@ -79,7 +81,8 @@ public class EventServiceImpl implements EventService {
 
     //Done
     @Override
-    public ArrayList<Event> getAllEvents() {
+    public EventResponse getAllEvents() {
+        log.info("get-all event service layer");
         ArrayList<Event> eventList = new ArrayList<>();
 
         Iterable<EventEntity> eventEntityIterable = eventRepository.findAll();
@@ -88,7 +91,7 @@ public class EventServiceImpl implements EventService {
             Event event = objectMapper.convertValue(eventEntityIterator.next(), Event.class);
             eventList.add(event);
         }
-        return eventList;
+        return new EventResponse("event-list","success",eventList);
     }
 
     private String generateEventId() {

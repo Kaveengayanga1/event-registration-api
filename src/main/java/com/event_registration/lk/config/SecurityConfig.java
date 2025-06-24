@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 
 @Configuration
 @EnableWebSecurity
@@ -32,12 +34,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
+//                .cors(cors -> cors
+//                        .configurationSource(request -> {
+//                            var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+//                            corsConfiguration.setAllowedOrigins(List.of("http://localhost:5500"));
+//                            corsConfiguration.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
+//                            corsConfiguration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+//                            corsConfiguration.setExposedHeaders(List.of("Authorization","Content-Type"));
+//                            return corsConfiguration;
+//                        }))
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll() //access for everyone
                         .requestMatchers("/event/**").hasRole("ADMIN")
+                        .requestMatchers("/event/get-all-events").hasRole("USER")
                         .requestMatchers("/booking/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/get-all-users", "/user/get-user-by-email").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

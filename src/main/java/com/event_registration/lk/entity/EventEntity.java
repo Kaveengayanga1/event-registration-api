@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -23,7 +24,8 @@ public class EventEntity {
             name = "event_price_ranges",
             joinColumns = @JoinColumn(name = "event_id") //add relations to db
     )
-    private ArrayList<PriceRange> priceRanges;
+    //private ArrayList<PriceRange> priceRanges;
+    private List<PriceRange> priceRanges;
     @Id
     private String eventId;
     private String name;
