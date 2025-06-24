@@ -16,9 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
 
-
+//Authenticate and set authorization rules
+//provide password encoder instances,
+//configure stateless session management,
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {

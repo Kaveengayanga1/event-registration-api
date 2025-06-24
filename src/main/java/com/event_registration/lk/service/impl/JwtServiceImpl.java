@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,7 @@ public class JwtServiceImpl {
 //                .compact();
 //    }
 
+    @Value("${spring.jwt.secret}")
     private String SECRET;
 
 
@@ -56,7 +58,7 @@ public class JwtServiceImpl {
         try {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGenerator.generateKey();
-            SECRET = Base64.getEncoder().encodeToString(sk.getEncoded());
+            //SECRET = Base64.getEncoder().encodeToString(sk.getEncoded());
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
