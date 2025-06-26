@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<UserEntity,String> {
+public interface UserRepository extends CrudRepository<UserEntity,Long> {
     public Boolean existsUserEntityByEmailContainingIgnoreCase(String email);
     public boolean existsByUserId(Long userId);
     boolean deleteByUserId(Long userId);
+
     Optional<UserEntity> findUserEntityByEmailContainingIgnoreCase(String email);
     UserEntity findUserEntityByEmailIgnoreCase(String email);
     Optional<UserEntity> findByUsernameIgnoreCase(String username);

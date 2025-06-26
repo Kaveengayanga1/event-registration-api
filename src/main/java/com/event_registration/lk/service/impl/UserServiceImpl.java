@@ -87,11 +87,8 @@ public class UserServiceImpl implements UserService {
             return new UserResponse("account-remove","user not exists");
         }
         try{
-            if (userRepository.deleteByUserId(userId)){
-                return new UserResponse("account-remove","success");
-            }else {
-                return new UserResponse("account-remove","unsuccess");
-            }
+            userRepository.deleteById(userId);
+            return new UserResponse("account-remove","success");
         }catch (Exception e){
             return new UserResponse("account-remove","error occurred : "+e.getMessage());
         }

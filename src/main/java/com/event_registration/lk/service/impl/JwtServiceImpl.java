@@ -50,7 +50,7 @@ public class JwtServiceImpl {
 //                .compact();
 //    }
 
-    @Value("${spring.jwt.secret}")
+    //@Value("${spring.jwt.secret}")
     private String SECRET;
 
 
@@ -59,6 +59,7 @@ public class JwtServiceImpl {
             KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
             SecretKey sk = keyGenerator.generateKey();
             //SECRET = Base64.getEncoder().encodeToString(sk.getEncoded());
+            SECRET="9070a07001f03abb91a1c1171d1454a53e3ebf8ef9062a7b7f9df21dd70f45a0";
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }

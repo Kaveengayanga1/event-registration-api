@@ -1,16 +1,20 @@
 spring :
   datasource:
     url : jdbc:mysql://localhost:3306/${DB_NAME}
+#    url : jdbc:mysql://localhost:3306/event_reg_db
     username : ${DB_USERNAME}
+#    username : root
     password : ${DB_PASSWORD}
+#    password : mysql
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa :
     hibernate :
-      ddl-auto : update
+      ddl-auto : create
 
   jwt:
     secret: ${JWT_SECRET}
+    #secret: 9070a07001f03abb91a1c1171d1454a53e3ebf8ef9062a7b7f9df21dd70f45a0
 
 #  kafka:
 #    bootstrap-servers: localhost:9092

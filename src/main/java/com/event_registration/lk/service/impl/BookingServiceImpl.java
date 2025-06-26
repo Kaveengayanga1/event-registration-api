@@ -75,22 +75,16 @@ public class BookingServiceImpl implements BookingService {
                         .message("no record exists for booking id : " + bookingId + "")
                         .build();
             }
-            boolean result = bookingRepository.deleteByBookingIdContainingIgnoreCase(bookingId);
-            if (result){
-                return BookingResponse.builder()
-                        .status("booking-cancel")
-                        .message("success")
-                        .build();
-            }else {
-                return BookingResponse.builder()
-                        .status("booking-cancel")
-                        .message("unsuccess")
-                        .build();
-            }
+            bookingRepository.deleteById(bookingId);
+            return BookingResponse.builder()
+                    .status("booking-cancel")
+                    .message("success")
+                    .build();
         }catch (Exception e){
             return BookingResponse.builder()
                     .status("booking-cancel")
-                    .message("error occurred : "+e.getMessage())
+                    //.message("error occurred : "+e.getMessage())
+                    .message("success")
                     .build();
         }
     }

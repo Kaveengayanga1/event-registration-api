@@ -3,6 +3,8 @@ package com.event_registration.lk.controller;
 import com.event_registration.lk.dto.User;
 import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -12,6 +14,7 @@ import java.util.Date;
 @CrossOrigin
 public class UserController {
 
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     UserService userService;
 
     public UserController(UserService userService) {
@@ -19,8 +22,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public UserResponse deleteUser(@RequestParam String userId) {
-        return userService.removeUser(Long.parseLong(userId));
+    public UserResponse deleteUser(@RequestParam Long userId) {
+        return userService.removeUser(userId);
     }
 
     @PutMapping("/update")
