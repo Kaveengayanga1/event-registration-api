@@ -6,7 +6,7 @@ import com.event_registration.lk.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-
+//Done
 @RestController
 @RequestMapping("/user")
 @CrossOrigin
@@ -27,7 +27,7 @@ public class UserController {
     public UserResponse updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
-
+    //for testing purpose
     @GetMapping("/hello")
     public String sayHello(){
         Date date = new Date(new java.util.Date().getTime());

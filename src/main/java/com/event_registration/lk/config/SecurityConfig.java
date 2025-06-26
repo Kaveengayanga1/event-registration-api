@@ -47,8 +47,8 @@ public class SecurityConfig {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll() //access for everyone
+                        .requestMatchers("/event/get-all-events").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/event/**").hasRole("ADMIN")
-                        .requestMatchers("/event/get-all-events").hasRole("USER")
                         .requestMatchers("/booking/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/get-all-users", "/user/get-user-by-email").hasRole("ADMIN")
