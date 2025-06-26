@@ -6,7 +6,7 @@ import com.event_registration.lk.dto.response.UserResponse;
 import com.event_registration.lk.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
+//Done
 @RestController
 @RequestMapping("/auth")
 @Slf4j
