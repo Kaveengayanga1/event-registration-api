@@ -35,21 +35,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-//                .cors(cors -> cors
-//                        .configurationSource(request -> {
-//                            var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
-//                            corsConfiguration.setAllowedOrigins(List.of("http://localhost:5500"));
-//                            corsConfiguration.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-//                            corsConfiguration.setAllowedHeaders(List.of("Authorization","Content-Type"));
-//                            corsConfiguration.setExposedHeaders(List.of("Authorization","Content-Type"));
-//                            return corsConfiguration;
-//                        }))
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            var corsConfiguration = new org.springframework.web.cors.CorsConfiguration();
+                            corsConfiguration.setAllowedOriginPatterns(java.util.List.of("http://localhost:[*]", "https://localhost:[*]"));
+                            corsConfiguration.setAllowedMethods(java.util.List.of("GET","POST","PUT","DELETE","OPTIONS"));
+                            corsConfiguration.setAllowedHeaders(java.util.List.of("*"));
+                            corsConfiguration.setExposedHeaders(java.util.List.of("Authorization","Content-Type"));
+                            corsConfiguration.setAllowCredentials(true);
+                            return corsConfiguration;
+                        }))
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/auth/**").permitAll() //access for everyone
-                        .requestMatchers("/event/get-all-events").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/event/get-all-events").permitAll()
                         .requestMatchers("/event/**").hasRole("ADMIN")
-                        .requestMatchers("/booking/**").hasRole("USER")
+                        .requestMatchers("/book/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/get-all-users", "/user/get-user-by-email").hasRole("ADMIN")
                         .anyRequest().authenticated())

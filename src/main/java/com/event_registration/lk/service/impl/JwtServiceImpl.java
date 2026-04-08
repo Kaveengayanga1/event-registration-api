@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,19 +48,11 @@ public class JwtServiceImpl {
 //                .compact();
 //    }
 
-    //@Value("${spring.jwt.secret}")
+    @Value("${jwt.secret:9070a07001f03abb91a1c1171d1454a53e3ebf8ef9062a7b7f9df21dd70f45a0}")
     private String SECRET;
 
-
     public JwtServiceImpl() {
-        try {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGenerator.generateKey();
-            //SECRET = Base64.getEncoder().encodeToString(sk.getEncoded());
-            SECRET="9070a07001f03abb91a1c1171d1454a53e3ebf8ef9062a7b7f9df21dd70f45a0";
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
+        // Secret is injected via @Value
     }
     private SecretKey getSecretKey() {
         byte[] keyBytes = Base64.getDecoder().decode(SECRET);
@@ -75,7 +65,7 @@ public class JwtServiceImpl {
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(loginRequest.getEmail())
+                .subject(subject)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000)) // 1 hour
                 .and()

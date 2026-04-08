@@ -26,8 +26,38 @@ replay_pid*
 # IntelliJ
 .idea/
 *.iml
+*.iws
+
+# Eclipse
+.settings/
+.classpath
+.project
+bin/
 
 # Maven
 target/
+.mvn/
+mvnw
+mvnw.cmd
 
-dev.env
+# Environment variables
+.env
+.env.*
+
+# Application Configuration (Sensitive data)
+src/main/resources/application-dev.yml
+
+# Frontends (If they should be versioned separately, but currently they are in gitignore)
+admin-frontend/
+client-frontend/
+
+# Miscellaneous
+.vscode/
+run.cmd
+run.sh
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db

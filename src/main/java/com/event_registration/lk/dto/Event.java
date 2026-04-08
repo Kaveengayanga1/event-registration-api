@@ -1,8 +1,6 @@
 package com.event_registration.lk.dto;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,20 +9,36 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
 public class Event {
+    @JsonProperty("eventId")
     private String eventId;
-    private String name;
-    private String description;
-    //private ArrayList<PriceRange> priceRanges;
-    //@OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<PriceRange> priceRanges; // ✅ Use List instead of ArrayList
-    private ArrayList<LocalDateTime> dates;
-    private String location;
-    private byte[] image;
 
+    @NotBlank(message = "Name is required")
+    @JsonProperty("name")
+    private String name;
+
+    @NotBlank(message = "Description is required")
+    @JsonProperty("description")
+    private String description;
+
+    @JsonProperty("priceRanges")
+    private List<PriceRange> priceRanges;
+
+    @NotNull(message = "Dates are required")
+    @JsonProperty("dates")
+    private ArrayList<LocalDateTime> dates;
+
+    @NotBlank(message = "Location is required")
+    @JsonProperty("location")
+    private String location;
+
+    @JsonProperty("image")
+    private byte[] image;
 }

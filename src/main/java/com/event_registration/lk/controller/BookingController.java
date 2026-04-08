@@ -4,6 +4,9 @@ import com.event_registration.lk.dto.request.BookingRequest;
 import com.event_registration.lk.dto.response.BookingResponse;
 import com.event_registration.lk.service.BookingService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 //Done
 @RestController
 @RequestMapping("/book")
@@ -17,15 +20,29 @@ public class BookingController {
     }
 
     @PostMapping
-    public BookingResponse bookEvent(@RequestBody BookingRequest bookingRequest){
-        return bookingService.bookEvent(bookingRequest);
+    public ResponseEntity<BookingResponse> bookEvent(@Valid @RequestBody BookingRequest bookingRequest){
+        BookingResponse response = bookingService.bookEvent(bookingRequest);
+        if (response.getMessage() != null && response.getMessage().startsWith("success")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
-    @GetMapping("/get-details")
-    public BookingResponse getUserBookingDetails(@RequestParam Long userId){
-        return bookingService.getUserBookingDetails(userId);
+    
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<BookingResponse> getUserBookingDetails(@PathVariable Long userId){
+        BookingResponse response = bookingService.getUserBookingDetails(userId);
+        if (response.getMessage() != null && response.getMessage().startsWith("record found")) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-    @DeleteMapping("/cancel")
-    public BookingResponse cancelBooking(@RequestParam String bookingId){
-        return bookingService.cancelBooking(bookingId);
+    
+    @DeleteMapping("/{bookingId}")
+    public ResponseEntity<BookingResponse> cancelBooking(@PathVariable String bookingId){
+        BookingResponse response = bookingService.cancelBooking(bookingId);
+        if ("success".equals(response.getMessage())) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 }

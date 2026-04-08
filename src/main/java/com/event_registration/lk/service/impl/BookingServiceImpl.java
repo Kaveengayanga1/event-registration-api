@@ -6,10 +6,12 @@ import com.event_registration.lk.dto.response.BookingResponse;
 import com.event_registration.lk.entity.BookingOrderEntity;
 import com.event_registration.lk.repository.BookingRepository;
 import com.event_registration.lk.repository.EventRepository;
+import com.event_registration.lk.repository.UserRepository;
 import com.event_registration.lk.service.BookingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,21 +23,37 @@ import java.util.stream.Collectors;
 //Done
 @Slf4j
 @Service
+@Primary
 public class BookingServiceImpl implements BookingService {
 
     BookingRepository bookingRepository;
     EventRepository eventRepository;
+    UserRepository userRepository;
     ObjectMapper objectMapper;
 
-    public BookingServiceImpl(BookingRepository bookingRepository, EventRepository eventRepository, ObjectMapper objectMapper) {
+    public BookingServiceImpl(BookingRepository bookingRepository, EventRepository eventRepository, UserRepository userRepository, ObjectMapper objectMapper) {
         this.bookingRepository = bookingRepository;
         this.eventRepository = eventRepository;
+        this.userRepository = userRepository;
         this.objectMapper = objectMapper;
     }
     //Done
     @Override
     public BookingResponse bookEvent(BookingRequest bookingRequest) {
         try {
+            if (!eventRepository.existsEventEntityByEventIdContainingIgnoreCase(bookingRequest.getEventId())) {
+                return BookingResponse.builder()
+                        .status("booking")
+                        .message("unsuccess : event not found")
+                        .build();
+            }
+            if (!userRepository.existsByUserId(bookingRequest.getUserId())) {
+                return BookingResponse.builder()
+                        .status("booking")
+                        .message("unsuccess : user not found")
+                        .build();
+            }
+
             BookingOrder order = BookingOrder.builder()
                     .eventId(bookingRequest.getEventId())
                     .userId(bookingRequest.getUserId())
