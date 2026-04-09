@@ -48,7 +48,7 @@ public class JwtServiceImpl {
 //                .compact();
 //    }
 
-    @Value("${jwt.secret:9070a07001f03abb91a1c1171d1454a53e3ebf8ef9062a7b7f9df21dd70f45a0}")
+    @Value("${jwt.secret}")
     private String SECRET;
 
     public JwtServiceImpl() {
@@ -60,7 +60,8 @@ public class JwtServiceImpl {
     }
 
     public String generateJwtToken(LoginRequest loginRequest) {
-        String subject = loginRequest.getEmail() != null ? loginRequest.getEmail() : loginRequest.getEmail();
+        // String subject = loginRequest.getEmail() != null ? loginRequest.getEmail() : loginRequest.getEmail();
+        String subject = loginRequest.getEmail();
         Map<String, Object> claims = new HashMap<>();
         return Jwts.builder()
                 .claims()

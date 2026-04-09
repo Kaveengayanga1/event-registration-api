@@ -102,7 +102,7 @@ public class BookingServiceImpl implements BookingService {
             return BookingResponse.builder()
                     .status("booking-cancel")
                     //.message("error occurred : "+e.getMessage())
-                    .message("success")
+                    .message("unsuccess")
                     .build();
         }
     }

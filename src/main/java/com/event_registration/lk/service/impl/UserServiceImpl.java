@@ -1,6 +1,5 @@
 package com.event_registration.lk.service.impl;
 
-
 import com.event_registration.lk.dto.User;
 import com.event_registration.lk.dto.request.LoginRequest;
 import com.event_registration.lk.dto.response.UserResponse;
@@ -27,7 +26,8 @@ public class UserServiceImpl implements UserService {
     AuthenticationManager authenticationManager;
     JwtServiceImpl jwtService;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,AuthenticationManager authenticationManager, JwtServiceImpl jwtService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager, JwtServiceImpl jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         this.jwtService = jwtService;
     }
 
-    //Done
+    // Done
     @Override
     public UserResponse addUser(User user) {
 
@@ -51,54 +51,61 @@ public class UserServiceImpl implements UserService {
         try {
             userRepository.save(userEntity);
 
-            //send email using producer
-            //signupEventProducer.publishUserSignupEvent(userEntity.getEmail());
+            // send email using producer
+            // signupEventProducer.publishUserSignupEvent(userEntity.getEmail());
 
-            return new UserResponse("signup","success");
+            return new UserResponse("signup", "success");
         } catch (Exception e) {
-            return new UserResponse("signup","unsuccess");
+            return new UserResponse("signup", "unsuccess");
         }
     }
-    //Done
+
+    // Done
     @Override
     public UserResponse loginUser(LoginRequest loginRequest) {
+
         UserEntity entity = userRepository.findUserEntityByEmailIgnoreCase(loginRequest.getEmail());
+
+        if (entity == null) {
+            return new UserResponse("login", "user not found");
+        }
         User user = objectMapper.convertValue(entity, User.class);
+
         user.setPassword(null);
         String jwtToken = jwtService.generateJwtToken(loginRequest);
         log.info("login user service layer");
         Authentication authentication = authenticationManager.authenticate(
 
                 new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail() /*!= null ? user.getEmail() : user.getUsername()*/,
-                        loginRequest.getPassword()
-                )
-        );
-        if (authentication.isAuthenticated()){
-            return new UserResponse("login","success",user,jwtToken);
-        }else {
+                        loginRequest.getEmail() /* != null ? user.getEmail() : user.getUsername() */,
+                        loginRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return new UserResponse("login", "success", user, jwtToken);
+        } else {
             return new UserResponse("login", "unsuccess");
         }
     }
-    //Done
+
+    // Done
     @Override
     public UserResponse removeUser(Long userId) {
-        if (!userRepository.existsByUserId(userId)){
-            return new UserResponse("account-remove","user not exists");
+        if (!userRepository.existsByUserId(userId)) {
+            return new UserResponse("account-remove", "user not exists");
         }
-        try{
+        try {
             userRepository.deleteById(userId);
-            return new UserResponse("account-remove","success");
-        }catch (Exception e){
-            return new UserResponse("account-remove","error occurred : "+e.getMessage());
+            return new UserResponse("account-remove", "success");
+        } catch (Exception e) {
+            return new UserResponse("account-remove", "error occurred : " + e.getMessage());
         }
     }
-    //Done
+
+    // Done
     @Override
     public UserResponse updateUser(User user) {
         Optional<UserEntity> existingUserEntity = userRepository.findByEmailIgnoreCase(user.getEmail());
-        if (existingUserEntity.isEmpty()){
-            return new UserResponse("account-update","user not exists");
+        if (existingUserEntity.isEmpty()) {
+            return new UserResponse("account-update", "user not exists");
         }
         UserEntity userEntity = objectMapper.convertValue(existingUserEntity.get(), UserEntity.class);
         userEntity.setEmail(user.getEmail());
@@ -107,30 +114,32 @@ public class UserServiceImpl implements UserService {
 
         try {
             userRepository.save(userEntity);
-            return new UserResponse("account-update","success");
+            return new UserResponse("account-update", "success");
         } catch (Exception e) {
-            return new UserResponse("account-update","unsuccess");
+            return new UserResponse("account-update", "unsuccess");
         }
     }
-    //Done
+
+    // Done
     @Override
     public UserResponse getAllUsers() {
         ArrayList<User> userList = new ArrayList<>();
 
         Iterable<UserEntity> userIterable = userRepository.findAll();
         Iterator<UserEntity> userEntityIterator = userIterable.iterator();
-        while (userEntityIterator.hasNext()){
+        while (userEntityIterator.hasNext()) {
             User user = objectMapper.convertValue(userEntityIterator.next(), User.class);
             userList.add(user);
         }
-        return new UserResponse("event-list","success",userList);
+        return new UserResponse("event-list", "success", userList);
     }
-    //Done
+
+    // Done
     @Override
     public UserResponse getUserByEmail(String email) {
         UserEntity entity = userRepository.findUserEntityByEmailIgnoreCase(email);
         User user = objectMapper.convertValue(entity, User.class);
         user.setPassword(null);
-        return new UserResponse("get user by email","success",user);
+        return new UserResponse("get user by email", "success", user);
     }
 }
