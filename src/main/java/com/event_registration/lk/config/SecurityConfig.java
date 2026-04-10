@@ -2,6 +2,7 @@ package com.event_registration.lk.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -47,8 +48,8 @@ public class SecurityConfig {
                         }))
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**").permitAll() //access for everyone
-                        .requestMatchers("/event/get-all-events").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/event").permitAll() // public event listing for client-frontend
                         .requestMatchers("/event/**").hasRole("ADMIN")
                         .requestMatchers("/book/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
